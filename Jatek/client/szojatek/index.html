@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" href="../visszagomb/gomb.css" type="text/css"/>
+    <script src="stopper.js"></script>
+    <script src="../postAdat.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <a id="visszaLink" href="#" class="visszaGomb">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1c6385" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 8 8 12 12 16"></polyline>
+            <line x1="16" y1="12" x2="8" y2="12"></line>
+        </svg>
+    </a>
+    <div class="bekeres" id="bekeres">
+        <div class="center">
+
+            
+            Szia <b id="nev">valaki</b>! 
+            <br/>
+            <b>Válasz pályát</b>
+        </div>
+        <div class="input">
+            <select id="nehezseg">
+                <option value="1">Gyümölcsök</option>
+                <option value="2">Állatok</option>
+                <option value="3">Ruhák</option>
+            </select>
+            <button onclick="jatekletrehozas()"> küldés</button>
+        </div>
+        
+    </div>
+    <div id="jatek" style="display: none ;margin-top: 50px;">
+        <div class="jatek">
+            <div class="szolista">
+                <h3 class="info">Megkeresendő szavak</h3>
+                <hr>
+                <ol id="megkeresendoszavak"></ol>
+            </div>
+            <div class="betuhalmaz" id="betuhalmaz"></div>
+            <div class="szolista">
+                <h3 class="info">Megtalált szavak</h3>
+                <hr>
+                <ol id="megtalaltszavak"></ol>
+            </div>
+        </div>
+        
+        <div class="informacios-sav">
+            <h2 class="info">
+                <span id="ido"></span>
+                Mp
+            </h2>
+            <h2 id="betuk">Betűk</h2>
+            <h2 class="info" id="jatekosnev">játékos neve</h2>
+        </div>
+    </div>
+    
+    <script src="index.js"></script>
+</body>
+</html>

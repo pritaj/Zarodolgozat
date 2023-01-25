@@ -1,0 +1,36 @@
+2 darab osztályunk van
+
+Stopper osztály:
+Változói: 
+    - Másodperc: mennyi időt töltött a játékos a megoldással
+    - SzamolasInterval: szükséges, hogy tudjuk mérni az időt
+    - kijelzo: hova akarjuk kiírni az időt.
+Függvényei: 
+    constructor: Beállítja nullára a másodpercet, és a kijelzőt.
+    start(): elindult a számolás. 
+        setInterval Paraméterei: Az első paraméter az a függvény amit megkell hívni
+                                Második paraméter, milyen időközönként hívja meg századmásodpercben mérve
+    Szamolas(): növeli a másodpercet egy értékkel, majd kiírjuk a kijelzore.
+    Stop(): Megállítja a számolás a clearInterval-al
+
+
+Aknakereso osztály:
+Változói:
+    - időmérés: Stopper példány: hogy tudjunk időtmérni.
+    - tabla: ez egy két dimenziós tömb, ami reprezentálja a táblánkat számokkal. 
+        - -1 - akna van az adott helyen
+        - -2 - ezt a számot csak tábla létrehozásánál használjuk, azt jelenti, hogy ide rakhatok számot, vagy bombát
+        - 0-8 - hány darab bomba van a mező mellett
+    felfedezettMezok: azt számoljuk, hogy mennyi mezőt fedeztünk már fel.
+    mennyiMezotKellFelfedezni: a játék nyeréséhez, mennyi mezőt kell felfedeznünk. JátékIndításánál kiszámoljuk
+    jatekStatusz: ezzel jelöljük hogy éppen milyen státuszban van a játék
+        0-> A játékos játszik
+        1 -> A játékos nyert
+        2 -> A játékos vesztett
+    jeloltMezok: Hány darab mezőt jelölt zászlóval a játékos
+    
+    Az első kattintásnál, elkell mentenünk, hogy hova kattintott a játékos, ezt elmentjük 2 darab változóba:
+        vedettSorIndex = 0;
+        vedettOszlopIndex = 0;
+    
+

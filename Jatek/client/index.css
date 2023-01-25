@@ -1,0 +1,108 @@
+body{
+    background-color: #bac7cd;
+    height: 100vh;
+}
+
+.oldal{
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.eredmenyek{
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 246px;
+    height: 510px;
+    border: 1px solid #194559;
+    border-radius: 10px;
+    padding: 5px 10px 0px 10px;
+    box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+}
+
+.eredmenyek h3{
+    font-size: 1.2rem;
+    margin: 0px;
+    width: 246px;
+    text-transform: uppercase;
+    color: #1c6385;
+    text-align: center;
+}
+.eredmenyek hr{
+    border: none;
+    border-top: 0.1rem solid #194559
+}
+
+
+.input-csomagolasa{
+    border: 1px solid #194559;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+}
+
+.input-csomagolasa select{
+    border: 1px solid #194559;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    
+}
+
+.input-csomagolasa input{
+    border: 1px solid #194559;
+    padding-left: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    
+}
+
+.input-csomagolasa button{
+    border: 1px solid #194559;
+    padding-left: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    
+}
+
+.input-csomagolasa button:hover{
+    background-color: rgba(240, 240, 240, 0.5);
+    
+    cursor: pointer    
+}
+
+table{
+    border-collapse: collapse;
+    box-shadow: 0px 0px 5px 2px rgb(25 69 89 / 76%) inset ;
+    -webkit-box-shadow: 0px 0px 5px 2px rgb(25 69 89 / 76%) inset;
+    -moz-box-shadow: 0px 0px 5px 2px rgb(25 69 89 / 76%) inset;
+}
+
+td , th { 
+    border-collapse: collapse;
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+tbody tr td {
+    text-align: center;
+}
+thead tr {
+    background-color: #a2b4bc inset;
+    color: black;
+}
+tr:nth-child(even){
+    background-color: #a2b4bc inset;
+}
+
+

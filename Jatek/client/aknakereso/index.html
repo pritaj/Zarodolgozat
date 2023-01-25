@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet">
+    <link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" href="../visszagomb/gomb.css" type="text/css"/>
+    <script src="../postAdat.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <!--src="../visszagomb/arrow-left-circle.svg"-->
+    <a  id="visszaLink" href="#" class="visszaGomb">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1c6385" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle">
+            
+        <circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg>
+    </a>
+    <div class="bekeres">
+        <div class="center">
+            Szia <b id="nev">valaki</b>! 
+            <br/>
+            <b>Válasz szintet</b>
+        </div>
+        <div class="input">
+            <select id="nehezseg">
+                <option value="1">Kezdő</option>
+                <option value="2">Normál</option>
+                <option value="3">Haladó</option>
+            </select>
+            <button onclick="jatekletrehozas()"> küldés</button>
+        </div>
+        
+    </div>
+
+    <div class="tabla" id="aknakeresotabla" style="display: none;">
+        <div class="fejlec">
+            <div class="kijelzo" id="aknakszama">Aknák: </div>
+            <button class="kozepsogomb" id="jatekUjraIndit">😊</button>
+            <div class="kijelzo" >Idő: <span id="ido">0</span></div>
+        </div> 
+        <div class="aknamezo" id="aknamezo">
+
+        </div>
+    </div>
+    
+</body>
+<script>
+
+    var jatekosnev = "";
+
+    //játékos név megszerzése az URlből
+    const adatUrlből = window.location.search;
+    //Változókkiszedése
+    const adatok = new URLSearchParams(adatUrlből);
+    //leellenőrizzük, hogy van-e beírt név, ha igen, akkor játszhat, ha nem akkor visszaírányítjuk a keződoldlra
+    if(adatok.has("nev")){
+        jatekosnev = adatok.get("nev");
+        document.getElementById("nev").innerHTML = jatekosnev
+    }
+    else{
+        window.location.href = window.location.origin + "/jatek/client";
+    }
+
+    //beállítani a visszagombot. 
+    document.getElementById("visszaLink").href = window.location.origin + "/jatek/client";
+
+    class Stopper {
+        masodperc = 0;
+        SzamolasInterval;
+        kijelzo;
+
+        constructor() {
+            this.masodperc = 0;
+            this.kijelzo = document.querySelector("#ido");
+        }
+
+        start(){
+           this.masodperc = 0; 
+           this.SzamolasInterval = setInterval(() => this.szamolas(), 1000);
+        }
+      
+        stop() {
+            clearInterval(this.SzamolasInterval)
+        }
+
+        szamolas(){
+            this.masodperc++;
+            this.kijelzo.innerHTML = this.masodperc;
+        }
+    }
+
+    class Aknakereso{
+        idomeres = new Stopper();      
+        //számokat tárolunk egy mátrixban
+        // -1 -> az aknát jelenti
+        // -2 -> az aknához nem nyúltunk, szóval felkell tölteni valami számmal, vagy bombával
+        // 0 --> nincs akna mellette
+        // 1-8 --> hogy mennyi akna van mellette
+        tabla = []; 
+        felfedezettMezok = 0;
+        mennyiMezotKellFelfedezni = 0;
+        //0 -> akkor még fut játék
+        //1 -> akkor nyert a játékos
+        //2 -> akkor a játékos vesztett
+        jatekStatusz = 0
+        jeloltMezok = 0;
+        aknaSzamKijelzo = document.getElementById("aknakszama");
+        jatekUjraInditGomb = document.getElementById("jatekUjraIndit");
+
+        vedettSorIndex = 0;
+        vedettOszlopIndex = 0;
+
+        
+        constructor(sor, oszlop, aknakszama, nehezseggiszint){
+            this.sor = Number(sor);
+            this.oszlop = Number(oszlop);
+            this.aknakszama = Number(aknakszama);
+            this.jatekUjraInditGomb.onclick = () => {
+                this.jatekUjraInditGomb.innerHTML = "😊";
+                this.jatekStatusz = 0;
+                this.startJatek();                
+            }
+            this.nehezseggiszint = nehezseggiszint
+
+            let aknakeresotabla = document.querySelector("#aknakeresotabla");
+            aknakeresotabla.style.width = ((this.oszlop*20))+"px";
+            
+        }
+
+        startJatek(){
+            //az aknamezőt mindenféleképpen kikell tölteni
+            document.getElementById("aknamezo").innerHTML = "";
+            //tábla sem lehet üres, felkell tölteni a -2-es értékekkel
+            this.tabla = [];
+
+            this.idomeres.stop();
+            this.idomeres.start();
+            this.jatekStatusz = 0;
+            this.felfedezettMezok = 0;
+            this.jeloltMezok = 0;         
+            this.mennyiMezotKellFelfedezni = (this.sor*this.oszlop) - this.aknakszama;
+            this.aknaSzamKijelzo.innerHTML = `Aknák: ${this.aknakszama}`;
+            this.tablaLetrehozas();
+        }
+
+        tablaMegjelnitesEloszor(){
+            let aknamezo = document.querySelector("#aknamezo");
+            for(let i = 0; i< this.sor; i++){
+                for(let j = 0; j < this.oszlop; j++){
+                    let akna = document.createElement("button");
+                    akna.className="akna";
+                    akna.innerHTML = "<span class='akna-szoveg'></span>";
+                    akna.setAttribute("sor",i);
+                    akna.setAttribute("oszlop",j);
+                    //bal klikk kezelése
+                    akna.onclick = () => {                        
+                        this.vedettSorIndex = Number(akna.getAttribute("sor"));
+                        this.vedettOszlopIndex= Number(akna.getAttribute("oszlop"));
+                        this.ujraGeneralas();
+                    }
+                    aknamezo.appendChild(akna);
+                }
+            }
+        }
+
+        ujraGeneralas(){
+            this.aknakElhelyezese();
+            this.nemAknasTerultekKitoltese();
+            this.tablaMegjelenit();
+            this.kattintMezore(this.vedettSorIndex,this.vedettOszlopIndex);
+        }
+
+     
+        tablaMegjelenit(){           
+            let aknamezo = document.querySelector("#aknamezo");
+            aknamezo.innerHTML = "";    
+            for(let i = 0; i< this.sor; i++){
+                for(let j = 0; j < this.oszlop; j++){
+                    let akna = document.createElement("button");
+                    
+                    akna.className ="akna";
+                    akna.innerHTML = "<span class='akna-szoveg'>"+ this.tabla[i][j] + "</span>";
+                    akna.setAttribute("sor",i);
+                    akna.setAttribute("oszlop",j)
+                    switch(this.tabla[i][j]){
+                        case 0: 
+                            akna.innerHTML = "<span class='akna-szoveg'></span>"; 
+                            break;
+                        
+                        case -1:
+                            //Akna mezőt találtunk 
+                            akna.innerHTML = "<img class='akna-szoveg bomba' src='bomb.png'></span>";
+                            akna.style.color = "red"; 
+                            break;
+                        case 1: akna.style.color = "blue"; break;
+                        case 2: akna.style.color = "green"; break;
+                        case 3: akna.style.color = "red"; break;
+                        case 4: akna.style.color = "purple"; break;
+                        case 5: akna.style.color = "brown"; break;
+                        case 6: akna.style.color = "rgb(60, 60, 60)"; break;
+                        case 7: akna.style.color = "maroon"; break;
+                        case 8: akna.style.color = "turquoise"; break;
+                    }
+                    //bal klikk kezelése
+                    akna.onclick = () => {
+                        
+                        let sor = akna.getAttribute("sor");
+                        let oszlop = akna.getAttribute("oszlop")
+                        this.kattintMezore(sor, oszlop);
+                    }
+                    
+                    //jobb klikk kezelése
+                    akna.addEventListener('contextmenu', (ev) => {
+                        //később elmagyarázom.
+                        ev.preventDefault();
+                        
+                        //mit fog csinálni a függvény
+                        this.jobbKlikkMezore(akna);
+                        
+
+                        //visszatérési értéke, pedig az, hogy megnyissa-e a böngésző context menüjét vagy ne
+                        return false;
+                    }, false);
+
+
+                    aknamezo.appendChild(akna);
+                }
+            }
+        } 
+
+        tablaLetrehozas(){
+            let tabla = [];
+            for(let sor = 0; sor < this.sor; sor++){
+                tabla[sor] = [];
+                for(let oszlop = 0; oszlop <this.oszlop; oszlop++){
+                    tabla[sor][oszlop] = -2; //ilyenkor még nem nyúltunk a táblához, majd átkell írni a megfelelő értékre
+                }
+            }
+            this.tabla = tabla;
+            this.tablaMegjelnitesEloszor();
+            //rögtön lehelyezzük az aknákat, így tudjuk, hogy csak a -2-es elemeken nincs akna;
+            //this.aknakElhelyezese();
+            //this.nemAknasTerultekKitoltese();
+            //this.tablaMegjelenit();
+        }
+
+
+        aknakElhelyezese(){
+            let mennyiaknakell = this.aknakszama;
+            
+            //lekell raknak valamennyi aknát
+            while(mennyiaknakell > 0){
+                //kell egy random szám a sorból és egy random szám az oszlopból
+                let sor = this.getRandomInt(this.sor);
+                let oszlop = this.getRandomInt(this.oszlop);
+                //a védett, ami ugye az első kattintása a usernek, nem rakhatunk bombát, szóval tovább megyünk
+                if(sor === this.vedettSorIndex && oszlop === this.vedettOszlopIndex) continue;
+
+                if(this.tabla[sor][oszlop] === -2){
+                    //akna elhelyezése a -1es érték
+                    this.tabla[sor][oszlop] = -1;
+                    mennyiaknakell--;
+                }
+                
+            }
+        }
+
+        nemAknasTerultekKitoltese(){
+            //végig kell menni a tömbön
+            console.table(this.tabla);
+            for(let sor = 0; sor < this.sor; sor++){
+                for(let oszlop = 0; oszlop < this.oszlop;oszlop++){
+                    let ertek = this.tabla[sor][oszlop];
+                    let aknaMellete = 0;
+                    if(ertek === -2){
+                        //akkor kell megszámolnom, hogy mennyi akna van mellette
+                        // megnézzük, hogy a mellete lévő oszlopban van-e -1-es érték
+                        //Csak akkor szabad lekérni a tömbből a változót, hogy olyan indexünk létezik
+                        //?. operátor, megnézi először, hogy van-e értéke a tömben, ha nincs egyszerűen nem lép bele az if-be.
+                        if(this.tabla?.[sor]?.[oszlop-1]  === -1) aknaMellete++;
+                        if(this.tabla?.[sor-1]?.[oszlop-1]  === -1) aknaMellete++;
+                        if(this.tabla?.[sor+1]?.[oszlop-1] === -1) aknaMellete++;
+                        if(this.tabla?.[sor-1]?.[oszlop] === -1) aknaMellete++;
+                        if(this.tabla?.[sor+1]?.[oszlop] === -1) aknaMellete++;
+                        if(this.tabla?.[sor-1]?.[oszlop+1]  === -1) aknaMellete++;
+                        if(this.tabla?.[sor]?.[oszlop+1] === -1) aknaMellete++;
+                        if(this.tabla?.[sor+1]?.[oszlop+1]  === -1) aknaMellete++;
+                        
+                    
+                        if(aknaMellete === 0){
+                            this.tabla[sor][oszlop] = 0;
+                        }
+                        else{
+                            this.tabla[sor][oszlop] = aknaMellete;
+                        }
+                    }
+                }
+            }
+        }
+
+        //Rekurzió függvény
+        felfedezes(sor, oszlop){
+
+            let oszlopszam = Number(oszlop);
+            let sorszam = Number(sor);
+            //ha nincs ilyen mező, akkor kilépünk a függvényből
+            if(this.tabla?.[sorszam]?.[oszlopszam] === undefined) return;
+
+
+            //mostmár tudjuk, hogy vna ilyen mező lekérhetjük a htmlből
+            let btn = document.querySelector(`button[sor='${sorszam}'][oszlop='${oszlopszam}']`);
+            //ha üres mező és nincs felfedve, akkor felkell fedni, és megvizsgálni a szomszédait is
+            if(btn.className.includes("akna-kattintva")) return;
+
+            if(this.tabla[sorszam][oszlopszam] === 0 && !btn.className.includes("akna-kattintva")){
+                btn.className += " akna-kattintva";
+                this.felfedezettMezok++;
+
+                /*
+                Jobbra, balra, fel, le és átlósan is felkell fedeznünk a kinem töltött területek addig amíg:
+                    - Kinem futunk a tábla széléig
+                    - Bombát nem találunk, azt nem fedjük fel
+                    - számot találunk és az első megtalált számnál megállunk a felfedezésben
+                
+                 */
+
+                //megvizsgáljuk a többi részét egy függvény hívással:
+                this.felfedezes(sorszam-1, oszlopszam);
+                this.felfedezes(sorszam-1, oszlopszam-1);
+                this.felfedezes(sorszam-1, oszlopszam+1);
+
+                this.felfedezes(sorszam, oszlopszam+1);
+                this.felfedezes(sorszam, oszlopszam-1);
+
+                this.felfedezes(sorszam+1, oszlopszam);
+                this.felfedezes(sorszam+1, oszlopszam-1);
+                this.felfedezes(sorszam+1, oszlopszam+1);
+            }
+            else if(this.tabla[sorszam][oszlopszam] > 0){
+                btn.className += " akna-kattintva";
+                this.felfedezettMezok++;
+                return;
+            }
+            
+        }
+
+
+        kattintMezore(sor, oszlop){
+            //ha nem fut játék, azaz nem nulla a játékstátusza, akkor nem csinálunk többé semmit a mezőkön
+            if(this.jatekStatusz !== 0) return;
+
+            //ha mező bomba, akkor meghalt
+            if(this.tabla[sor][oszlop] === -1) {                
+                let btn = document.querySelector(`button[sor='${sor}'][oszlop='${oszlop}']`);
+                btn.style.backgroundColor = "red";
+                btn.className += " akna-kattintva";
+                this.vesztesAllasMegjelenetites()
+                
+                alert("Bombát találtál!");                
+            }
+            else{
+                this.felfedezes(sor,oszlop);
+            }
+            
+
+            //ha ebben az if-be belefutunk, akkor nyert a játékos
+            if(this.mennyiMezotKellFelfedezni === this.felfedezettMezok){
+                this.jatekStatusz = 1;
+                this.nyertAllasMegjelenites();
+                
+            }
+            //btn.className += " akna-kattintva";
+            
+     
+            
+
+        }
+
+        jobbKlikkMezore(aknaBtn){
+            let zaszlokSzama = document.querySelectorAll(".jobb-klikkelve").length;
+            if(this.jatekStatusz !== 0) return;
+            if(zaszlokSzama < this.aknakszama){
+                //toggle-nak a visszatérési értéke, ha true, akkor rárakta a zászlót, ha false, akkor levette.
+                if(aknaBtn.classList.toggle("jobb-klikkelve") === true){
+                    zaszlokSzama++
+                }
+                else{
+                    zaszlokSzama--;
+                }
+                this.aknaSzamKijelzo.innerHTML = `Aknák: ${this.aknakszama-zaszlokSzama}`;
+            } else{
+                if(aknaBtn.className.includes("jobb-klikkelve")){
+                    aknaBtn.classList.toggle("jobb-klikkelve")
+                    zaszlokSzama--;
+                    this.aknaSzamKijelzo.innerHTML = `Aknák: ${this.aknakszama-zaszlokSzama}`;
+                }
+            }
+        }
+        
+        getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        nyertAllasMegjelenites(){
+            this.idomeres.stop();
+            this.jatekUjraInditGomb.innerHTML = "😍";
+            alert(`Nyertél: ${this.idomeres.masodperc} másodperc alatt`);
+            //ide kellen majd a szerver kapcsolat, hogy elmentse az adatábizba a dolgokat... 
+
+            const eredmeny = {
+                nev: jatekosnev,
+                palya: this.nehezseggiszint -1, 
+                masodperc: this.idomeres.masodperc
+            }
+
+            postData("http://localhost/jatek/server/postAknakeresoEredmeny.php", eredmeny);
+
+            //az összes bombát zöld színű hátteret akarok neki adni.
+            let nemKattintottMezok = document.querySelectorAll("button.akna:not(.akna-kattintva)")
+            nemKattintottMezok.forEach(button => {
+                button.style.backgroundColor = "green";
+                button.classList = "akna";
+            })
+
+
+        }
+        
+        vesztesAllasMegjelenetites(){
+            this.jatekStatusz = 2;
+            this.jatekUjraInditGomb.innerHTML = "😓"
+            this.idomeres.stop();
+            let mezok = document.querySelectorAll("button.akna");
+            mezok.forEach((btn) => {
+                if(btn.className.includes("akna-kattintva") === false){
+                    btn.className += " akna-kattintva";
+                }
+                let sorindex = btn.getAttribute("sor");
+                let oszlopindex = btn.getAttribute("oszlop");
+                if(this.tabla[sorindex][oszlopindex] === -1){
+                    btn.style.backgroundColor = "red";
+                }
+            });
+        }
+        
+
+    }
+
+    
+   
+
+    var aknakereso
+    
+
+    function jatekletrehozas(){       
+        
+        document.querySelector(".bekeres").style.display = "none";
+        document.querySelector(".tabla").style.display = "flex";
+
+
+        let sor;
+        let oszlop;
+        let aknakszama;
+
+        let nehezseggiszint = document.querySelector("#nehezseg").value;
+        switch (nehezseggiszint) {
+            case "1":
+                sor = 15;
+                oszlop = 15;
+                aknakszama = 40;
+                break;
+            case "2":
+                sor = 25;
+                oszlop = 25;
+                aknakszama = 60;
+                break;
+            case "3":
+                sor = 30;
+                oszlop = 30;
+                aknakszama = 80;
+                break;
+        
+            default:
+                break;
+        }
+
+        document.getElementById("visszaLink").href = window.location;
+
+        aknakereso = new Aknakereso(sor,oszlop,aknakszama,nehezseggiszint); 
+        aknakereso.startJatek();
+    }
+
+    
+
+  
+
+    
+
+</script>
+</html>

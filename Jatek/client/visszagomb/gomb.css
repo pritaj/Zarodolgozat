@@ -1,0 +1,9 @@
+.feather-arrow-left-circle{
+    stroke: #1c6385;
+}
+
+.feather-arrow-left-circle:hover{
+    stroke: #49829D;
+    cursor: pointer;
+    pointer-events: all;
+}

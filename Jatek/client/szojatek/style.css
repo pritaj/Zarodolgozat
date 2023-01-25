@@ -1,0 +1,142 @@
+.jatek{
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+    background-color: #bac7cd;
+
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #bac7cd;
+}
+
+.ujjatek {
+    color: #1c6385;
+    margin-bottom: 0px;
+}
+
+
+.bekeres{
+    padding: 45px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+
+}
+.center{
+    text-align: center;
+}
+.input select{
+    border: 1px solid #194559;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    
+}
+.input button{
+    border: 1px solid #194559;
+    padding-left: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 3px rgba(25,69,89,0.76);
+}
+
+
+
+.szolista{
+    width: 246px;
+    height: 510px;
+    border: 1px solid #194559;
+    border-radius: 10px;
+    padding: 5px 10px 0px 10px;
+    box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+}
+.szolista h2{
+    font-size: 1.5rem;
+    margin: 0px
+}
+.szolista hr{
+    border: none;
+    border-top: 0.1rem solid #194559
+}
+
+.szolista ol li{
+    padding-left: 25px;
+}
+
+.betuhalmaz{
+    display: flex;
+    width: 510px;
+    height: max-content;
+    flex-wrap: wrap;
+    padding: 0px;
+    align-content: flex-start;
+    box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+    -moz-box-shadow: 0px 0px 10px 5px rgba(25,69,89,0.76);
+}
+
+button.betu{
+    background: none;
+    border: 1px solid #194559;
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+button.betu:hover{
+   background-color: rgba(19,45,59,0.3)
+}
+
+button.betu.kivalasztott{
+    background-color: red;
+}
+
+button.megtalalt {
+    background-color: green;;
+}
+
+.informacios-sav{
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+
+
+}
+.informacios-sav h2{
+    text-transform: uppercase;
+    color: #1c6385;
+}
+.info{
+    width: 246px;
+    text-transform: uppercase;
+    color: #1c6385;
+    text-align: center;
+}
+
+#betuk{
+    width: 510px;
+}
+
+.visszaGomb{
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    border: none;
+    background: none;
+}

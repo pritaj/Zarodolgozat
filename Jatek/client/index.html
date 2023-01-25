@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Játékok</title>
+        <script src="getAdat.js"></script>
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+        <div class="oldal">
+            <div class="eredmenyek">
+                <h3>Aknakereső játék</h3>
+                <hr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Játékos neve</th>
+                            <th>Pálya</th>
+                            <th>Másodperc</th>
+                        </tr>
+                    </thead>
+                    <tbody id="aknakeresoEredmenyek">
+                    </tbody>
+                </table>
+            </div>
+            <div class="input-csomagolasa">
+                <input type="text" id="jatekosneve" placeholder="Játékos neve">
+                <select id="jatek">
+                    <option value="1">Aknakereső</option>
+                    <option value="2">Szójáték</option>
+                </select>
+                <button onclick="jatekKezdese()">Játék kezdése</button>
+            </div>
+            <div class="eredmenyek">
+                <h3>Szókereső játék</h3>
+                <hr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Játékos neve</th>
+                            <th>Pálya</th>
+                            <th>Másodperc</th>
+                        </tr>
+                    </thead>
+                    <tbody id="szokereseoEredmenyek">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            async function adatokBetoltes(){
+
+                const aknakeresoTabla = document.getElementById("aknakeresoEredmenyek"); //aknakereső lista
+                const aknakeresoEredmenyek = await getData("http://localhost/jatek/server/selectAknakereso.php");//lekérjük a szerverről
+                aknakeresoEredmenyek.forEach(aknakeresoEredmeny => { //végigmegyünk az összes eredményen
+                    const tableRow = document.createElement("tr");
+                    const nevAdat = document.createElement("td");
+                    nevAdat.innerHTML = aknakeresoEredmeny.nev;
+                    const palyaAdat = document.createElement("td");
+                    let palyanev = "";
+                    switch(aknakeresoEredmeny.palya){
+                        case 0: 
+                            palyanev = "Kezdő";
+                            break;
+                        case 1: 
+                            palyanev = "Normál";
+                            break;
+                        case 2: 
+                            palyanev = "Haladó";
+                            break;
+
+                    }
+                    palyaAdat.innerHTML = palyanev;
+                    const masodpercAdat = document.createElement("td");
+                    masodpercAdat.innerHTML = aknakeresoEredmeny.masodperc+" mp";
+                    tableRow.appendChild(nevAdat);
+                    tableRow.appendChild(palyaAdat);
+                    tableRow.appendChild(masodpercAdat);
+
+
+                    aknakeresoTabla.appendChild(tableRow);
+
+                });
+
+                const szokeresoTabla = document.getElementById("szokereseoEredmenyek"); //aknakereső lista
+                const szokeresoListaEredmenyek = await getData("http://localhost/Jatek/server/selectSzokereso.php");//lekérjük a szerverről
+                szokeresoListaEredmenyek.forEach(szokeresoEredmeny => { //végigmegyünk az összes eredményen
+                    const tableRow = document.createElement("tr");
+                    const nevAdat = document.createElement("td");
+                    nevAdat.innerHTML = szokeresoEredmeny.nev;
+                    const palyaAdat = document.createElement("td");
+                    let palyanev = "";
+                    switch(szokeresoEredmeny.palya){
+                        case 1: 
+                            palyanev = "Gyümölcs";
+                            break;
+                        case 2:
+                            palyanev = "Állatok";
+                            break;
+                        case 3: 
+                            palyanev = "Ruhák"
+                            break;
+
+                    }
+                    palyaAdat.innerHTML = palyanev;
+
+                    const masodpercAdat = document.createElement("td");
+                    masodpercAdat.innerHTML = szokeresoEredmeny.masodperc+" mp";
+                    tableRow.appendChild(nevAdat);
+                    tableRow.appendChild(palyaAdat);
+                    tableRow.appendChild(masodpercAdat);
+                    szokeresoTabla.appendChild(tableRow);
+
+                });
+            }
+            adatokBetoltes();
+            function jatekKezdese(){
+                const jatekosnev = document.getElementById("jatekosneve").value;
+                const jatek = document.getElementById("jatek").value;
+
+                if(jatekosnev === ""){
+                    alert("Írj be egy nevet");
+                    return;
+                }
+
+                if(jatekosnev.length > 18){
+                    alert("Kérlek írj be rövidebb nevet");
+                    return;
+                }
+
+                switch(jatek){
+                    case "1":
+                        //aknakereső
+                        //átkell írányítani a jelengi url + /aknakereso/ oldalra
+
+                        window.location.href = window.location.href+"aknakereso/?nev="+jatekosnev
+                        break;
+                    case "2":
+                        //Szójáték játékot jelenti
+                        //átkell írányítani a jelengi url + /aknakereso/ oldalra
+                        window.location.href = window.location.href+"szojatek/?nev="+jatekosnev
+
+                        break;
+                }
+                console.log(window.location.href);
+            }
+        </script>
+    </body>
+    
+</html>
