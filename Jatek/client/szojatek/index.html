@@ -8,6 +8,7 @@
     <link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" href="../visszagomb/gomb.css" type="text/css"/>
     <script src="stopper.js"></script>
     <script src="../postAdat.js"></script>
+    <script src="../getAdat.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -28,9 +29,7 @@
         </div>
         <div class="input">
             <select id="nehezseg">
-                <option value="1">Gyümölcsök</option>
-                <option value="2">Állatok</option>
-                <option value="3">Ruhák</option>
+                
             </select>
             <button onclick="jatekletrehozas()"> küldés</button>
         </div>
@@ -62,5 +61,15 @@
     </div>
     
     <script src="index.js"></script>
+    <script>
+        getData("http://localhost/Jatek/server/selectPalyak.php").then(
+            e => {
+                const select = document.getElementById('nehezseg');
+                e.forEach(element => {
+                    select.innerHTML += `<option value="${element.palya}">${element.palya}</option>`
+                });
+            }
+        );
+    </script>
 </body>
 </html>

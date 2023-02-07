@@ -17,56 +17,23 @@ var palya
 
 document.getElementById("visszaLink").href = window.location.origin + "/jatek/client";
 
-function jatekletrehozas(){
+async function jatekletrehozas(){
     document.getElementById("bekeres").style.display = "none";
     document.getElementById("jatek").style.display = "block";
     document.getElementsByTagName("body")[0].style.display="block";
 
     palya = document.getElementById("nehezseg").value;
 
-    switch(palya){
-        case "1": 
-            szavak = [
-                new Szo('Körte', 4 , 11 , 0),
-                new Szo('Alma', 0 , 0 , 1),    
-                new Szo('Barack', 6, 0, 2),
-                new Szo('Szilva', 8,5 , 3),
-                new Szo('Mandarin', 12,5, 4),
-                new Szo('Citrom', 5 , 11, 5),
-                new Szo('Eper', 12,8,6),
-                new Szo('Málna', 11,16,7)
-            ];
-            break;
-        case "2":
-            szavak = [
-                new Szo('Cica', 16 , 16 , 0),
-                new Szo('Kutya', 2 , 2 , 5),
-                new Szo('Viziló', 2 , 7 , 1),
-                new Szo('Bagoly', 11 , 4 , 2),
-                new Szo('Hal', 0 , 16 , 3),
-                new Szo('Sündisznó', 10 , 7 , 4),
-                new Szo('Teknős', 10 , 6 , 6),
-                new Szo('Patkány', 8 , 14 , 7),
-                new Szo('Malac', 11 , 1 , 5),
-                new Szo('Kecske', 10 , 15 , 0),
-            ];
-            break;
-        case "3":
-            szavak = [
-                new Szo('Zokni', 10 , 5 , 4),
-                new Szo('Bugyi', 10 , 8 , 6),
-                new Szo('Nadrág', 5 , 10 , 3),
-                new Szo('Ing', 1 , 13 , 2),
-                new Szo('Farmer', 4 , 13 , 1),
-                new Szo('Blúz', 4 , 2 , 0),
-                new Szo('Kesztyű', 10 , 11 , 7),
-                new Szo('Póló', 12 , 4 , 5),
-                new Szo('Sál', 9 , 2 , 6),
-                new Szo('Sapka', 15 , 11 , 4),
-            ]
+    // szavak <-- ide rakjuk bele a szavakat
+    szavak = [];
+    await getData("http://localhost/Jatek/server/selectSzavakByPalyaNev.php?palyanev="+palya).then(
+        szavakSzerverrol => {
+                szavakSzerverrol.forEach(szo => {
+                   szavak.push(new Szo(szo.szo,szo.sor,szo.oszlop,szo.irany));
+                });
+            }
+        );
 
-        
-    }
 
     jatekKezdese();
 }
