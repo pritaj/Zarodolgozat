@@ -9,7 +9,7 @@
     <script src="stopper.js"></script>
     <script src="../postAdat.js"></script>
     <script src="../getAdat.js"></script>
-    <title>Document</title>
+    <title>Szójáték</title>
 </head>
 <body>
     <a id="visszaLink" href="#" class="visszaGomb">
@@ -23,7 +23,7 @@
         <div class="center">
 
             
-            Szia <b id="nev">valaki</b>! 
+            Szia <b id="jatekosnev"></b>! 
             <br/>
             <b>Válasz pályát</b>
         </div>
@@ -56,7 +56,7 @@
                 Mp
             </h2>
             <h2 id="betuk">Betűk</h2>
-            <h2 class="info" id="jatekosnev">játékos neve</h2>
+            <h2 class="info" id="jatekosnev_ingame">játékos neve</h2>
         </div>
     </div>
     
@@ -66,7 +66,7 @@
             e => {
                 const select = document.getElementById('nehezseg');
                 e.forEach(element => {
-                    select.innerHTML += `<option value="${element.palya}">${element.palya}</option>`
+                    select.innerHTML += `<option value="${element.id}">${element.neve}</option>`
                 });
             }
         );

@@ -7,11 +7,13 @@ const adatok = new URLSearchParams(adatUrlből);
 //leellenőrizzük, hogy van-e beírt név, ha igen, akkor játszhat, ha nem akkor visszaírányítjuk a keződoldlra
 if(adatok.has("nev")){
     document.getElementById("jatekosnev").innerHTML = adatok.get("nev");
+    document.getElementById("jatekosnev_ingame").innerHTML = adatok.get("nev");
     jatekosnev = adatok.get("nev");
 }
 else{
     window.location.href = window.location.origin + "/jatek/client";
 }
+
 var szavak;
 var palya
 
